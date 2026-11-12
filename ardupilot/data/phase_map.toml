@@ -1,0 +1,127 @@
+# Flight-phase map for ArduCopter parameters.
+#
+# This file is the original contribution of this project (the parameter
+# names and descriptions themselves come from ArduPilot, see NOTICE.md).
+#
+# How classification works (tools/phases.py):
+#   1. If a parameter name is listed in some phase's `names`, that phase wins.
+#   2. Otherwise every phase's `patterns` (Python regular expressions,
+#      matched against the start of the name) are tried, and the phase with
+#      the LONGEST matching pattern wins. So "PSC_D_" beats "PSC".
+#   3. Anything left over goes to the "other" phase.
+#
+# `key_params` are the handful of parameters worth reading first in each
+# phase. They get a highlighted table in the generated docs and are the
+# default columns of tools/compare_frames.py.
+
+[[phase]]
+id = "01-frame-motors"
+title = "Frame and motors"
+summary = "What the aircraft physically is: frame layout, motor output range, thrust curve and hover throttle. Get this right before tuning anything else."
+patterns = ["FRAME_", "MOT_", "SERVO", "ESC_", "RPM"]
+names = []
+key_params = ["FRAME_CLASS", "FRAME_TYPE", "MOT_PWM_TYPE", "MOT_SPIN_ARM", "MOT_SPIN_MIN", "MOT_SPIN_MAX", "MOT_THST_EXPO", "MOT_THST_HOVER", "MOT_HOVER_LEARN", "MOT_BAT_VOLT_MAX", "MOT_BAT_VOLT_MIN"]
+
+[[phase]]
+id = "02-sensors-estimation"
+title = "Sensors and state estimation"
+summary = "How the flight controller knows where it is and which way is up: IMU, compass, barometer, GPS, rangefinder, optical flow and the EKF that fuses them. Indoor no-GPS flight lives or dies here."
+patterns = ["INS", "AHRS_", "EK3_", "EK2_", "EAHRS", "COMPASS_", "BARO", "GPS", "RNGFND", "FLOW", "VISO", "BCN", "ARSPD", "TCAL"]
+names = []
+key_params = ["AHRS_EKF_TYPE", "EK3_SRC1_POSXY", "EK3_SRC1_VELXY", "EK3_SRC1_POSZ", "EK3_SRC1_VELZ", "EK3_SRC1_YAW", "EK3_RNG_USE_HGT", "GPS1_TYPE", "RNGFND1_TYPE", "RNGFND1_ORIENT", "RNGFND1_MIN", "RNGFND1_MAX", "FLOW_TYPE", "FLOW_FXSCALER", "FLOW_FYSCALER"]
+
+[[phase]]
+id = "03-arming-preflight"
+title = "Arming and pre-flight checks"
+summary = "What must be true before the motors are allowed to spin. Keep the checks on; they catch most first-flight accidents."
+patterns = ["ARMING_", "BRD_SAFETY", "DISARM_"]
+names = ["DISARM_DELAY"]
+key_params = ["ARMING_SKIPCHK", "ARMING_RUDDER", "DISARM_DELAY", "BRD_SAFETY_DEFLT"]
+
+[[phase]]
+id = "04-takeoff-climb"
+title = "Takeoff and climb"
+summary = "How fast and how hard the aircraft leaves the ground and climbs, whether flown by hand in an altitude-holding mode or commanded from a script."
+patterns = ["PILOT_TKO", "PILOT_SPD_UP", "PILOT_SPEED_UP", "TKOFF_", "WPNAV_TKOFF"]
+names = ["PILOT_SPD_UP", "PILOT_SPEED_UP", "PILOT_TKO_ALT_M", "PILOT_TKOFF_ALT", "PILOT_ACC_Z", "PILOT_ACCEL_Z", "MOT_SPOOL_TIME", "MOT_SPOOL_TIM_DN"]
+key_params = ["PILOT_SPD_UP", "PILOT_ACC_Z", "PILOT_TKO_ALT_M", "MOT_SPOOL_TIME"]
+
+[[phase]]
+id = "05-attitude-stabilize"
+title = "Attitude control (Stabilize / Acro)"
+summary = "The inner loops that hold roll, pitch and yaw: rate PIDs, angle P gains, acceleration limits and stick feel. These are the numbers that change most between airframes."
+patterns = ["ATC_", "ACRO_", "ANGLE_MAX", "AUTOTUNE_", "QUIK_", "RTUN_", "FLIP_", "PILOT_Y"]
+names = ["ANGLE_MAX"]
+key_params = ["ATC_RAT_RLL_P", "ATC_RAT_RLL_I", "ATC_RAT_RLL_D", "ATC_RAT_PIT_P", "ATC_RAT_PIT_I", "ATC_RAT_PIT_D", "ATC_RAT_YAW_P", "ATC_RAT_YAW_I", "ATC_ANG_RLL_P", "ATC_ANG_PIT_P", "ATC_ANG_YAW_P", "ATC_ACC_R_MAX", "ATC_ACC_P_MAX", "ATC_ACC_Y_MAX", "ATC_INPUT_TC", "ATC_ANGLE_MAX"]
+
+[[phase]]
+id = "06-filters-noise"
+title = "Filters and vibration"
+summary = "Gyro and accelerometer low-pass filters, harmonic notch filters and FFT. Good filtering lets the attitude gains go higher without hot motors or oscillation."
+patterns = ["INS_GYRO_FILTER", "INS_ACCEL_FILTER", "INS_HNTC", "FFT_", "FILT"]
+names = []
+key_params = ["INS_GYRO_FILTER", "INS_ACCEL_FILTER", "INS_HNTCH_ENABLE", "INS_HNTCH_MODE", "INS_HNTCH_FREQ", "INS_HNTCH_BW", "INS_HNTCH_REF", "INS_HNTCH_HMNCS"]
+
+[[phase]]
+id = "07-altitude-hold"
+title = "Altitude hold (AltHold / PosHold / Loiter vertical axis)"
+summary = "Holding a height: vertical position/velocity/acceleration controllers, throttle deadzone and pilot vertical speed limits. These set how the throttle stick (or an RC override from a script) maps to climb rate."
+patterns = ["PSC_D_", "PSC_POSZ", "PSC_VELZ", "PSC_ACCZ", "THR_DZ", "PILOT_SPD_DN", "PILOT_SPEED_DN", "PILOT_THR_"]
+names = ["THR_DZ", "PILOT_SPD_DN", "PILOT_SPEED_DN"]
+key_params = ["THR_DZ", "PILOT_SPD_DN", "PSC_D_POS_P", "PSC_D_VEL_P", "PSC_D_ACC_P", "PSC_D_ACC_I"]
+
+[[phase]]
+id = "08-position-hold"
+title = "Position hold (Loiter / PosHold / FlowHold)"
+summary = "Staying in one spot horizontally and how the sticks move the aircraft when position is held. FlowHold is the optical-flow-only option for indoors."
+patterns = ["PSC_NE_", "PSC_POSXY", "PSC_VELXY", "PSC_ANGLE", "PSC", "LOIT_", "PHLD_", "FHLD"]
+names = []
+key_params = ["LOIT_SPEED_MS", "LOIT_ACC_MAX_M", "LOIT_BRK_ACC_M", "LOIT_ANG_MAX", "PHLD_BRK_RATE", "PHLD_BRK_ANGLE", "PSC_NE_POS_P", "PSC_NE_VEL_P", "PSC_NE_VEL_I"]
+
+[[phase]]
+id = "09-navigation-auto"
+title = "Navigation (Guided / Auto / RTL)"
+summary = "Autonomous movement: waypoint speeds and accelerations, Guided mode used by companion computers, return-to-launch behaviour."
+patterns = ["WPNAV_", "WP_", "GUID_", "RTL_", "SRTL_", "AUTO_", "CIRCLE_", "MIS_", "RALLY_", "OA_", "AVOID_", "PRX", "FOLL", "ZIGZ_", "TERRAIN_", "SURFTRAK"]
+names = []
+key_params = ["WP_SPD", "WP_SPD_UP", "WP_SPD_DN", "WP_ACC", "WP_RADIUS_M", "GUID_OPTIONS", "GUID_TIMEOUT", "RTL_ALT_M", "RTL_SPEED_MS", "RTL_LOIT_TIME"]
+
+[[phase]]
+id = "10-landing"
+title = "Landing"
+summary = "Final descent speed, when the aircraft decides it has touched down, precision landing and ground effect compensation."
+patterns = ["LAND_", "PLND_", "GNDEFF_", "LGR_"]
+names = []
+key_params = ["LAND_SPD_MS", "LAND_SPD_HIGH_MS", "LAND_ALT_LOW_M", "LAND_REPOSITION"]
+
+[[phase]]
+id = "11-failsafe-battery"
+title = "Failsafes, battery and geofence"
+summary = "What happens when something goes wrong: lost radio, lost ground station or companion computer, low battery, crossing the fence, crash detection."
+patterns = ["FS_", "BATT", "FENCE_", "CHUTE_", "AFS_"]
+names = []
+key_params = ["FS_THR_ENABLE", "FS_THR_VALUE", "FS_GCS_ENABLE", "FS_EKF_ACTION", "FS_CRASH_CHECK", "BATT_MONITOR", "BATT_CAPACITY", "BATT_LOW_VOLT", "BATT_CRT_VOLT", "BATT_FS_LOW_ACT", "BATT_FS_CRT_ACT", "FENCE_ENABLE"]
+
+[[phase]]
+id = "12-radio-modes"
+title = "Radio input and flight modes"
+summary = "Mapping transmitter channels to sticks, switches and flight modes, and how long an RC override from a script stays valid."
+patterns = ["RC", "RCMAP_", "FLTMODE", "RSSI_", "THR_KILL"]
+names = ["RC_OVERRIDE_TIME"]
+key_params = ["RCMAP_ROLL", "RCMAP_PITCH", "RCMAP_THROTTLE", "RCMAP_YAW", "FLTMODE_CH", "FLTMODE1", "FLTMODE2", "FLTMODE3", "FLTMODE4", "FLTMODE5", "FLTMODE6", "RC_OVERRIDE_TIME", "RSSI_TYPE"]
+
+[[phase]]
+id = "13-companion-telemetry"
+title = "Companion computer and telemetry"
+summary = "Serial ports and MAVLink links to a Raspberry Pi, telemetry radio or ground station, plus logging."
+patterns = ["SERIAL", "MAV", "SYSID", "SR", "LOG", "DDS", "NET_", "CAN", "MSP", "SCR_"]
+names = []
+key_params = ["SERIAL1_PROTOCOL", "SERIAL1_BAUD", "SERIAL2_PROTOCOL", "SERIAL2_BAUD", "MAV_SYSID", "LOG_BITMASK", "LOG_DISARMED"]
+
+[[phase]]
+id = "99-other"
+title = "Other"
+summary = "Peripherals and features not tied to a flight phase (camera, gimbal, OSD, LEDs, sprayer, winch, simulation and so on)."
+patterns = []
+names = []
+key_params = []

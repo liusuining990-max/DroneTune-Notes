@@ -1,0 +1,11 @@
+# Limits for the takeoff / hover / land script (RC override in PosHold) and safety.
+PILOT_SPD_UP,0.5      # m/s; default 2.5 overshoots a 0.8 m target indoors
+PILOT_SPD_DN,0.3      # m/s; gentle descent
+LAND_SPD_MS,0.3       # m/s; final descent speed in LAND
+MOT_HOVER_LEARN,2     # learn and save hover throttle during manual hovers
+FS_THR_ENABLE,3       # radio link lost: land
+FS_GCS_ENABLE,5       # ground station / companion link lost: land
+BATT_LOW_VOLT,10.5    # 3S: 3.5 V per cell under load
+BATT_FS_LOW_ACT,1     # low battery: land
+BATT_CRT_VOLT,9.9     # 3S: 3.3 V per cell
+BATT_FS_CRT_ACT,1     # critical battery: land

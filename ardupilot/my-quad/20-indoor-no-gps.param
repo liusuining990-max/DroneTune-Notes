@@ -1,0 +1,8 @@
+# Indoor flight with optical flow and no GPS.
+EK3_SRC1_POSXY,0      # no absolute horizontal position source indoors
+EK3_SRC1_VELXY,5      # horizontal velocity from optical flow
+EK3_SRC1_POSZ,1       # height from barometer...
+EK3_SRC1_VELZ,0       # no vertical velocity source
+EK3_SRC1_YAW,1        # heading from compass (calibrate it outdoors, away from metal)
+EK3_RNG_USE_HGT,70    # ...but switch to the rangefinder below 70% of its range (more accurate near the floor)
+GPS1_TYPE,0           # no GPS fitted for indoor tests; set back to 1 (AUTO) outdoors

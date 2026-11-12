@@ -1,0 +1,17 @@
+# Example input for tests only (hand-written, not from a real aircraft)
+# version
+# Betaflight / STM32F405 (S405) 4.5.1
+board_name SPEEDYBEEF405V4
+feature -AIRMODE
+serial 1 64 115200 57600 0 115200
+aux 0 0 0 1800 2100 0 0
+set serialrx_provider = CRSF
+set motor_pwm_protocol = DSHOT300
+set dshot_bidir = OFF
+set motor_poles = 14
+set gyro_lpf1_static_hz = 250
+profile 0
+set p_roll = 45
+set d_roll = 30
+rateprofile 0
+set roll_rc_rate = 100

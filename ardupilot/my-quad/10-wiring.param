@@ -1,0 +1,13 @@
+# Ports and sensors on my build. Change the SERIALn numbers to match the ports
+# your board actually uses (Pixhawk 6C: TELEM1=SERIAL1, TELEM2=SERIAL2, GPS2=SERIAL4).
+SERIAL1_PROTOCOL,23   # ELRS receiver (CRSF) on TELEM1; without this the radio calibration page shows no bars
+RSSI_TYPE,3           # link quality comes from the receiver protocol
+SERIAL2_PROTOCOL,2    # Raspberry Pi companion computer on TELEM2, MAVLink2
+SERIAL2_BAUD,921      # must match MAVProxy --baudrate 921600 on the Pi
+SERIAL4_PROTOCOL,32   # Matek 3901-L0X optical flow + ToF rangefinder, MSP protocol
+SERIAL4_BAUD,115      # MSP default 115200
+FLOW_TYPE,7           # optical flow over MSP
+RNGFND1_TYPE,32       # rangefinder over MSP
+RNGFND1_ORIENT,25     # facing down
+RNGFND1_MIN,0.02      # metres; ToF sensor floor
+RNGFND1_MAX,2         # metres; usable indoor range of the L0X ToF
