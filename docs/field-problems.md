@@ -1,6 +1,7 @@
 # Build and flight problems
 
-Each row follows one chain: **the hardware or wiring choice → what the software
+These are the problems I've collected and worked through while getting back into
+building and tuning my own quads. Each row follows one chain: **the hardware or wiring choice → what the software
 shows → what happens in the air → the fix**. Most "software" problems start with a
 hardware or wiring decision, so changing a parameter alone doesn't fix them.
 
